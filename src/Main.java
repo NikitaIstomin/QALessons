@@ -1,46 +1,42 @@
 public class Main {
     public static void main(String[] args) {
-        Dog dog1 = new Dog();
-        dog1.run(300);
-        dog1.swim(5);
+        String[][] validArray = {
+                {"1", "2", "3", "4"},
+                {"5", "6", "7", "8"},
+                {"9", "10", "11", "12"},
+                {"13", "14", "15", "16"}
+        };
 
-        Cat cat1 = new Cat();
-        cat1.run(150);
-        cat1.swim(10);
+        String[][] invalidArraySize = {
+                {"1", "2"},
+                {"3", "4"}
+        };
 
-        FoodBowl bowl = new FoodBowl(10);
+        String[][] invalidArrayData = {
+                {"1", "2", "3", "4"},
+                {"5", "six", "7", "8"},
+                {"9", "10", "11", "12"},
+                {"13", "14", "15", "16"}
+        };
 
-        Cat[] cats = {new Cat(), new Cat(), new Cat()};
-
-        cat1.eat(bowl);
-        for (Cat cat : cats) {
-            cat.eat(bowl);
+        try {
+            int result = ArraySum.arraySum(validArray);
+            System.out.println("Сумма элементов массива: " + result);
+        } catch (MyArraySizeException | MyArrayDataException e) {
+            System.out.println(e.getMessage());
         }
 
-        for (int i = 0; i < cats.length; i++) {
-            System.out.println("Кот " + (i + 1) + " сыт: " + cats[i].isFull());
+        try {
+            ArraySum.arraySum(invalidArraySize);
+        } catch (MyArraySizeException | MyArrayDataException e) {
+            System.out.println(e.getMessage());
         }
 
-        System.out.println("Всего животных: " + Animal.getAnimalCount());
-        System.out.println("Всего собак: " + Dog.getDogCount());
-        System.out.println("Всего котов: " + Cat.getCatCount());
+        try {
+            ArraySum.arraySum(invalidArrayData);
+        } catch (MyArraySizeException | MyArrayDataException e) {
+            System.out.println(e.getMessage());
 
-        bowl.addFood(5);
-
-        for (Cat cat : cats) {
-            cat.eat(bowl);
         }
-
-        for (int i = 0; i < cats.length; i++) {
-            System.out.println("Кот " + (i + 1) + " сыт: " + cats[i].isFull());
-        }
-        //Второе задание:
-        Shape circle = new Circle(5, "Красный", "Черный");
-        Shape rectangle = new Rectangle(4, 6, "Синий", "Зеленый");
-        Shape triangle = new Triangle(3, 4, 5, "Желтый", "Фиолетовый");
-
-        System.out.println("Круг: " + circle.getDetails() + ", Цвет заливки: " + circle.getFillColor() + ", Цвет границы: " + circle.getBorderColor());
-        System.out.println("Прямоугольник: " + rectangle.getDetails() + ", Цвет заливки: " + rectangle.getFillColor() + ", Цвет границы: " + rectangle.getBorderColor());
-        System.out.println("Треугольник: " + triangle.getDetails() + ", Цвет заливки: " + triangle.getFillColor() + ", Цвет границы: " + triangle.getBorderColor());
     }
 }
