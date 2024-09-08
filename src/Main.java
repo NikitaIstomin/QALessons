@@ -1,42 +1,20 @@
 public class Main {
     public static void main(String[] args) {
-        String[][] validArray = {
-                {"1", "2", "3", "4"},
-                {"5", "6", "7", "8"},
-                {"9", "10", "11", "12"},
-                {"13", "14", "15", "16"}
-        };
 
-        String[][] invalidArraySize = {
-                {"1", "2"},
-                {"3", "4"}
-        };
+        System.out.println("Task 1:");
+        UniqueWordsCounter.ShowTask1();
 
-        String[][] invalidArrayData = {
-                {"1", "2", "3", "4"},
-                {"5", "six", "7", "8"},
-                {"9", "10", "11", "12"},
-                {"13", "14", "15", "16"}
-        };
+        System.out.println("Task 2:");
+                PhoneBook myPhoneBook = new PhoneBook();
 
-        try {
-            int result = ArraySum.arraySum(validArray);
-            System.out.println("Сумма элементов массива: " + result);
-        } catch (MyArraySizeException | MyArrayDataException e) {
-            System.out.println(e.getMessage());
-        }
+        myPhoneBook.add("Петров", "88005553535");
+        myPhoneBook.add("Иванов", "+79253595322");
+        myPhoneBook.add("Иванов", "+380947115144");
+        myPhoneBook.add("Сидоров", "223-322-223-322");
 
-        try {
-            ArraySum.arraySum(invalidArraySize);
-        } catch (MyArraySizeException | MyArrayDataException e) {
-            System.out.println(e.getMessage());
-        }
+        System.out.println("Телефоны Иванова: " + myPhoneBook.get("Иванов"));
+        System.out.println("Телефоны Петрова: " + myPhoneBook.get("Петров"));
+        System.out.println("Телефоны Сидорова: " + myPhoneBook.get("Сидоров"));
 
-        try {
-            ArraySum.arraySum(invalidArrayData);
-        } catch (MyArraySizeException | MyArrayDataException e) {
-            System.out.println(e.getMessage());
-
-        }
     }
 }
