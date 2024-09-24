@@ -100,13 +100,12 @@ public class MtsTests {
 
         // Нажатие на кнопку "Продолжить"
         paymentPage.clickContinueButton();
-
+        //Thread.sleep(10000);
         // Переключение на фрейм оплаты
         paymentPage.switchToPaymentFrame();
-
+        //Thread.sleep(10000);
         // Проверка корректности суммы
         Assert.assertEquals(paymentPage.getAmountText(), "1.00 BYN", "Сумма некорректна.");
-        //Thread.sleep(10000);
 
         // Проверка корректности номера телефона
         Assert.assertTrue(paymentPage.getPhoneText().contains("375297777777"), "Номер телефона некорректен.");
@@ -125,6 +124,7 @@ public class MtsTests {
         Assert.assertTrue(paymentPage.isPaymentIconVisible(paymentPage.mastercardIcon), "Иконка Mastercard не отображается.");
         Assert.assertTrue(paymentPage.isPaymentIconVisible(paymentPage.belkartIcon), "Иконка Belkart не отображается.");
         Assert.assertTrue(paymentPage.isPaymentIconVisible(paymentPage.maestroIcon), "Иконка Maestro не отображается.");
+
     }
 
     @AfterMethod

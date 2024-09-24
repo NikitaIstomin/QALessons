@@ -36,8 +36,7 @@ public class PaymentMethods {
         WebElement sumField = form.findElement(By.id("connection-sum"));
         sumField.sendKeys(sum);
 
-        // Добавляем задержку для ожидания, что элементы загрузились
-        Thread.sleep(2000); // Жесткая задержка в 2 секунды (не рекомендуется)
+        //Thread.sleep(2000);
 
         WebElement nextButton = driver.findElement(By.cssSelector(".button.button__default"));
         nextButton.click();
