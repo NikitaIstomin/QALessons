@@ -99,13 +99,11 @@ public class MtsTests {
         Assert.assertTrue(paymentPage.getPhoneText().contains("375297777777"), "Номер телефона некорректен.");
         Assert.assertTrue(paymentPage.getPayButtonText().contains("Оплатить 1.00 BYN"), "Текст на кнопке некорректен.");
 
-        // Проверка плейсхолдеров для реквизитов карты
         Assert.assertEquals(paymentPage.getPlaceholder(paymentPage.cardNumberPlaceholder), "Номер карты", "Плейсхолдер номера карты некорректен.");
         Assert.assertEquals(paymentPage.getPlaceholder(paymentPage.expirationDatePlaceholder), "Срок действия", "Плейсхолдер срока действия некорректен.");
         Assert.assertEquals(paymentPage.getPlaceholder(paymentPage.cvcPlaceholder), "CVC", "Плейсхолдер CVC некорректен.");
         Assert.assertEquals(paymentPage.getPlaceholder(paymentPage.cardHolderPlaceholder), "Имя держателя (как на карте)", "Плейсхолдер имени держателя некорректен.");
 
-        // Проверка иконок платежных систем
         Assert.assertTrue(paymentPage.isPaymentIconVisible(paymentPage.visaIcon), "Иконка Visa не отображается.");
         Assert.assertTrue(paymentPage.isPaymentIconVisible(paymentPage.mastercardIcon), "Иконка Mastercard не отображается.");
         Assert.assertTrue(paymentPage.isPaymentIconVisible(paymentPage.belkartIcon), "Иконка Belkart не отображается.");
