@@ -1,10 +1,8 @@
 package main;
-
 import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -12,6 +10,17 @@ public class PaymentMethods {
 
     private WebDriver driver;
 
+    public void openHomePage() {
+        driver.get("https://www.mts.by/");
+    }
+
+    public void acceptCookies() {
+        try {
+            WebElement cookiesButton = driver.findElement(By.id("cookie-agree"));
+            cookiesButton.click();
+        } catch (Exception ignored) {
+        }
+    }
 
     public WebElement getOnlineTopUpBlock() {
         return driver.findElement(By.className("pay__wrapper"));
@@ -26,6 +35,7 @@ public class PaymentMethods {
     public void clickLearnMoreLink() {
         driver.findElement(By.linkText("Подробнее о сервисе")).click();
     }
+
 
     // Заполнить поля телефон и сумма, затем нажать "Далее"
     public void fillFormAndClickNext(String phoneNumber, String sum) throws InterruptedException {
@@ -42,41 +52,37 @@ public class PaymentMethods {
         nextButton.click();
     }
     private By serviceLinck = By.linkText("Подробнее о сервисе");
-
-    // Локаторы для "Услуги связи"
+    private By onlineTopUpBlock = By.className("pay__wrapper");
+    private By paymentPartners = By.className("pay__partners");
+    private By onlineTopUpHeader = By.tagName("h2");
+    //Услуги связи
     private By phoneFieldConnection = By.id("connection-phone");
     private By sumFieldConnection = By.id("connection-sum");
     private By emailFieldConnection = By.id("connection-email");
     private By continueButton = By.cssSelector(".button.button__default");  // Кнопка "Продолжить"
-
-    // Локаторы для "Домашнего интернета"
+    // Домашний интернет
     private By phoneFieldInternet = By.id("internet-phone");
     private By sumFieldInternet = By.id("internet-sum");
     private By emailFieldInternet = By.id("internet-email");
-
-    // Локаторы для "Рассрочки"
+    //Рассрочка
     private By scoreFieldInstallment = By.id("score-instalment");
     private By sumFieldInstallment = By.id("instalment-sum");
     private By emailFieldInstallment = By.id("instalment-email");
-
-    // Локаторы для "Задолженности"
+    //Задолженность
     private By scoreFieldArrears = By.id("score-arrears");
     private By sumFieldArrears = By.id("arrears-sum");
     private By emailFieldArrears = By.id("arrears-email");
-
-    // Локаторы для элементов фрейма
+    //Элементы фрейма
     private By paymentFrame = By.tagName("iframe");
     private By amountText = By.xpath("//div[contains(@class, 'pay-description__cost')]/span");
     private By phoneText = By.xpath("//div[contains(@class, 'pay-description__text')]/span");
     private By payButton = By.xpath("//button[contains(text(), 'Оплатить')]");
-
-    // Локаторы для плейсхолдеров реквизитов карты
+    //Реквизиты карты
     public By cardNumberPlaceholder = By.xpath("//input[@formcontrolname='creditCard']");
     public By expirationDatePlaceholder = By.xpath("//input[@formcontrolname='expirationDate']");
     public By cvcPlaceholder = By.xpath("//input[@formcontrolname='cvc']");
     public By cardHolderPlaceholder = By.xpath("//input[@formcontrolname='holder']");
-
-    // Локаторы для иконок платежных систем
+    //Иконки платежных систем
     public By visaIcon = By.xpath("//img[@src='assets/images/payment-icons/card-types/visa-system.svg']");
     public By mastercardIcon = By.xpath("//img[@src='assets/images/payment-icons/card-types/mastercard-system.svg']");
     public By belkartIcon = By.xpath("//img[@src='assets/images/payment-icons/card-types/belkart-system.svg']");
@@ -105,24 +111,21 @@ public class PaymentMethods {
         driver.findElement(continueButton).click();
     }
 
-    // Методы для проверки фрейма
-    /*public void switchToPaymentFrame2() {
-        driver.switchTo().frame(driver.findElement(paymentFrame));
-    }*/
-
     public void switchToPaymentFrame() {
-        // Явное ожидание появления фрейма и его нахождение с помощью findElement
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // Ожидание до 10 секунд
         WebElement frameElement = wait.until(ExpectedConditions.presenceOfElementLocated(paymentFrame)); // Ждём, пока фрейм станет доступным
-
-        // Переключение на найденный фрейм
         driver.switchTo().frame(driver.findElement(paymentFrame));
     }
 
+    public String getOnlineTopUpHeaderText() {
+        WebElement block = driver.findElement(onlineTopUpBlock); // Ищем блок
+        return block.findElement(onlineTopUpHeader).getText().trim(); // Ищем заголовок внутри блока и возвращаем текст
+    }
 
-    public String getAmountText() {
+    public String getAmountText() throws InterruptedException {
         //return driver.findElement(amountText).getText();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        //Thread.sleep(10000);
         return wait.until(ExpectedConditions.visibilityOf(driver.findElement(amountText))).getText();
     }
 
@@ -134,7 +137,6 @@ public class PaymentMethods {
         return driver.findElement(payButton).getText();
     }
 
-    // Метод для получения плейсхолдера
     public String getPlaceholder(By fieldLocator) {
         WebElement field = driver.findElement(fieldLocator);
         return field.getAttribute("placeholder");
@@ -144,9 +146,14 @@ public class PaymentMethods {
         return driver.findElement(iconLocator).isDisplayed();
     }
 
-
-
-    // Методы для проверки плейсхолдеров
+    public boolean isLogoPresent(String logoAltText) {
+        try {
+            WebElement logoElement = getPaymentPartners().findElement(By.xpath(".//img[@alt='" + logoAltText + "']"));
+            return logoElement.isDisplayed();
+        } catch (Exception e) {
+            return false; // Если не найден или не отображается
+        }
+    }
 
     // Услуги связи
     public boolean isPhonePlaceholderConnectionCorrect() {

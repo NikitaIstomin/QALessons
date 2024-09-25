@@ -1,13 +1,14 @@
 package test;
 import main.PaymentMethods;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
+import org.junit.jupiter.api.DisplayName;
+
+import java.time.Duration;
 
 public class MtsTests {
 
@@ -20,45 +21,42 @@ public class MtsTests {
         driver.manage().window().maximize();
         paymentPage = new PaymentMethods(driver);
 
-        driver.get("https://www.mts.by/");
-        try {
-            WebElement CookiesButton = driver.findElement(By.id("cookie-agree"));
-            CookiesButton.click();
-        } catch (Exception ignored) {
-        }
+        paymentPage.openHomePage();
+        paymentPage.acceptCookies();
     }
 
     @Test
+    @DisplayName ("Проверяем наличие текста Онлайн пополнение без комиссии")
     public void blockAvailability() {
-        String blockText = paymentPage.getOnlineTopUpBlock().findElement(By.tagName("h2")).getText().trim();
-        Assert.assertTrue(blockText.contains("Онлайн пополнение"));
-        Assert.assertTrue(blockText.contains("без комиссии"));
+        String blockText = paymentPage.getOnlineTopUpHeaderText();
+        Assert.assertTrue(blockText.contains("Онлайн пополнение"), "Текст 'Онлайн пополнение' не найден в блоке");
+        Assert.assertTrue(blockText.contains("без комиссии"), "Текст 'без комиссии' не найден в блоке");
     }
 
     @Test
+    @DisplayName ("Проверяем наличие логотипов платежных систем")
     public void logoAvailability() {
         String[] logos = {"Visa", "Verified By Visa", "MasterCard", "MasterCard Secure Code", "Белкарт"};
         for (String logo : logos) {
-            WebElement logoElement = paymentPage.getPaymentPartners().findElement(By.xpath(".//img[@alt='" + logo + "']"));
-            Assert.assertNotNull(logoElement, "Логотип " + logo + " не найден");
-            Assert.assertTrue(logoElement.isDisplayed(), "Логотип " + logo + " не отображается на странице");
+            boolean isPresent = paymentPage.isLogoPresent(logo);
+            Assert.assertTrue(isPresent, "Логотип " + logo + " не найден или не отображается на странице");
         }
     }
 
     @Test
+    @DisplayName("Проверяем работу ссылки 'Подробнее о сервисе'")
     public void linkAvailability() {
-        WebElement link = driver.findElement(By.linkText("Подробнее о сервисе"));
-        link.click();
+        paymentPage.clickLearnMoreLink();
         String expectedUrl = "https://www.mts.by/help/poryadok-oplaty-i-bezopasnost-internet-platezhey/";
         Assert.assertEquals(driver.getCurrentUrl(), expectedUrl, "URL после клика по ссылке 'Подробнее о сервисе' не соответствует ожидаемому");
     }
 
     @Test
+    @DisplayName("Проверяем работу кнопки продолжить")
     public void nextButtonAvailability() throws InterruptedException {
          paymentPage.fillFormAndClickNext("297777777", "100");
         try {
             paymentPage.switchToPaymentFrame();
-            // Добавляем ассерт, что фрейм доступен и переключение произошло
             Assert.assertTrue(true, "Фрейм оплаты успешно найден и переключение на него выполнено.");
         } catch (NoSuchElementException | TimeoutException e) {
             Assert.fail("Не удалось найти фрейм оплаты после нажатия на кнопку 'Далее'.");
@@ -66,51 +64,39 @@ public class MtsTests {
     }
 
     @Test
+    @DisplayName("Проверяем надписи в полях каждого варианта оплаты услуг")
     public void testPlaceholders() {
-
-        // Проверка плейсхолдеров для "Услуги связи"
+        // Услуги связи
         Assert.assertTrue(paymentPage.isPhonePlaceholderConnectionCorrect(), "Плейсхолдер для номера телефона некорректный.");
         Assert.assertTrue(paymentPage.isSumPlaceholderConnectionCorrect(), "Плейсхолдер для суммы некорректный.");
         Assert.assertTrue(paymentPage.isEmailPlaceholderConnectionCorrect(), "Плейсхолдер для email некорректный.");
-
-        // Проверка плейсхолдеров для "Домашнего интернета"
+        // Домашний интернет
         Assert.assertTrue(paymentPage.isPhonePlaceholderInternetCorrect(), "Плейсхолдер для номера абонента некорректный.");
         Assert.assertTrue(paymentPage.isSumPlaceholderInternetCorrect(), "Плейсхолдер для суммы некорректный.");
         Assert.assertTrue(paymentPage.isEmailPlaceholderInternetCorrect(), "Плейсхолдер для email некорректный.");
-
-        // Проверка плейсхолдеров для "Рассрочки"
+        // Рассрочка
         Assert.assertTrue(paymentPage.isScorePlaceholderInstallmentCorrect(), "Плейсхолдер для номера счета на 44 некорректный.");
         Assert.assertTrue(paymentPage.isSumPlaceholderInstallmentCorrect(), "Плейсхолдер для суммы некорректный.");
         Assert.assertTrue(paymentPage.isEmailPlaceholderInstallmentCorrect(), "Плейсхолдер для email некорректный.");
-
-        // Проверка плейсхолдеров для "Задолженности"
+        // Задолженность
         Assert.assertTrue(paymentPage.isScorePlaceholderArrearsCorrect(), "Плейсхолдер для номера счета на 2073 некорректный.");
         Assert.assertTrue(paymentPage.isSumPlaceholderArrearsCorrect(), "Плейсхолдер для суммы некорректный.");
         Assert.assertTrue(paymentPage.isEmailPlaceholderArrearsCorrect(), "Плейсхолдер для email некорректный.");
     }
 
     @Test
+    @DisplayName("Проверяем корректность данных и надписи фрейма")
     public void testServicePaymentFlow() throws InterruptedException {
         //driver.get("https://www.mts.by/");
-
-        // Заполнение полей для "Услуги связи"
         paymentPage.fillPhoneField("297777777");
         paymentPage.fillSumField("1");
         paymentPage.fillEmailField("test@example.com");
 
-        // Нажатие на кнопку "Продолжить"
         paymentPage.clickContinueButton();
-        //Thread.sleep(10000);
-        // Переключение на фрейм оплаты
         paymentPage.switchToPaymentFrame();
         //Thread.sleep(10000);
-        // Проверка корректности суммы
         Assert.assertEquals(paymentPage.getAmountText(), "1.00 BYN", "Сумма некорректна.");
-
-        // Проверка корректности номера телефона
         Assert.assertTrue(paymentPage.getPhoneText().contains("375297777777"), "Номер телефона некорректен.");
-
-        // Проверка текста на кнопке
         Assert.assertTrue(paymentPage.getPayButtonText().contains("Оплатить 1.00 BYN"), "Текст на кнопке некорректен.");
 
         // Проверка плейсхолдеров для реквизитов карты
