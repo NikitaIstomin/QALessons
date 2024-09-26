@@ -13,7 +13,7 @@ public class ApiTests {
 
     @BeforeClass
     public void setUp() {
-        apiRequestPage = new ApiRequestPage();  // Инициализация Page Object для запросов API
+        apiRequestPage = new ApiRequestPage();
     }
 
     @Test

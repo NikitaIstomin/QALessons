@@ -13,7 +13,6 @@ public class ApiRequestPage {
         RestAssured.baseURI = baseUrl;
     }
 
-    // GET-запрос с параметрами
     public Response sendGetRequest(Map<String, String> queryParams) {
         return RestAssured.given()
                 .queryParams(queryParams)
@@ -21,7 +20,6 @@ public class ApiRequestPage {
                 .get("/get");
     }
 
-    // POST-запрос с raw текстом
     public Response sendPostRawTextRequest(String requestBody) {
         return RestAssured.given()
                 .header("Content-Type", "text/plain")
@@ -30,7 +28,6 @@ public class ApiRequestPage {
                 .post("/post");
     }
 
-    // POST-запрос с form data
     public Response sendPostFormDataRequest(Map<String, String> formParams) {
         return RestAssured.given()
                 .contentType("application/x-www-form-urlencoded")
@@ -39,7 +36,6 @@ public class ApiRequestPage {
                 .post("/post");
     }
 
-    // PUT-запрос
     public Response sendPutRequest(String requestBody) {
         return RestAssured.given()
                 .header("Content-Type", "text/plain")
@@ -48,7 +44,6 @@ public class ApiRequestPage {
                 .put("/put");
     }
 
-    // PATCH-запрос
     public Response sendPatchRequest(String requestBody) {
         return RestAssured.given()
                 .header("Content-Type", "text/plain")
@@ -57,7 +52,6 @@ public class ApiRequestPage {
                 .patch("/patch");
     }
 
-    // DELETE-запрос
     public Response sendDeleteRequest(String requestBody) {
         return RestAssured.given()
                 .header("Content-Type", "text/plain")
