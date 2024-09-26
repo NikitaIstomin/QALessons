@@ -35,7 +35,7 @@ public class ApiTests {
     }
 
     @Test
-    @DisplayName("Запрос POST")
+    @DisplayName("Запрос POST Raw Text")
     public void postRawTextTest() {
         String baseUrl = "https://postman-echo.com/post";
 
@@ -63,7 +63,7 @@ public class ApiTests {
     }
 
     @Test
-    @DisplayName("Проверка POST-запроса с form data")
+    @DisplayName("Запрос POST Form Data")
     public void postFormDataTest() {
         // Устанавливаем базовый URL
         String baseUrl = "https://postman-echo.com/post";
